@@ -2,6 +2,7 @@
     .name = .examples,
     .fingerprint = 0x7bd0ad450d8e52ad,
     .version = "0.1.0",
+    .minimum_zig_version = "0.16.0-dev.2637+6a9510c0e",
     .paths = .{""},
     .dependencies = .{
         .webview = .{

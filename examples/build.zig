@@ -16,19 +16,20 @@ pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{});
 
     const webview = b.dependency("webview", .{});
-    
+    const webview_static = webview.artifact("webviewStatic");
+
     const basic = b.addExecutable(.{
         .name = "basic",
         .root_module = b.addModule("basic", .{
             .root_source_file = b.path("basic.zig"),
             .target = target,
             .optimize = optimize,
+            .link_libc = true,
         }),
     });
 
     basic.root_module.addImport("webview", webview.module("webview"));
-    basic.linkLibC();
-    basic.linkSystemLibrary("webview");
+    basic.root_module.linkLibrary(webview_static);
     b.installArtifact(basic);
     const bind = b.addExecutable(.{
         .name = "bind",
@@ -36,12 +37,12 @@ pub fn build(b: *std.Build) void {
             .root_source_file = b.path("bind.zig"),
             .target = target,
             .optimize = optimize,
+            .link_libc = true,
         }),
     });
 
     bind.root_module.addImport("webview", webview.module("webview"));
-    bind.linkLibC();
-    bind.linkSystemLibrary("webview");
+    bind.root_module.linkLibrary(webview_static);
     b.installArtifact(bind);
     const eval = b.addExecutable(.{
         .name = "eval",
@@ -49,12 +50,12 @@ pub fn build(b: *std.Build) void {
             .root_source_file = b.path("eval.zig"),
             .target = target,
             .optimize = optimize,
+            .link_libc = true,
         }),
     });
 
     eval.root_module.addImport("webview", webview.module("webview"));
-    eval.linkLibC();
-    eval.linkSystemLibrary("webview");
+    eval.root_module.linkLibrary(webview_static);
     b.installArtifact(eval);
 
     const dispatch = b.addExecutable(.{
@@ -63,12 +64,12 @@ pub fn build(b: *std.Build) void {
             .root_source_file = b.path("dispatch.zig"),
             .target = target,
             .optimize = optimize,
+            .link_libc = true,
         }),
     });
 
     dispatch.root_module.addImport("webview", webview.module("webview"));
-    dispatch.linkLibC();
-    dispatch.linkSystemLibrary("webview");
+    dispatch.root_module.linkLibrary(webview_static);
     b.installArtifact(dispatch);
     const basic_cmd = b.addRunArtifact(basic);
     const bind_cmd = b.addRunArtifact(bind);
